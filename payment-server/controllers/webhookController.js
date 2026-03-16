@@ -11,7 +11,8 @@ exports.razorpayWebhook = async (req, res) => {
 
     const shasum = crypto.createHmac("sha256", secret);
 
-    shasum.update(req.body);
+    shasum.update(req.body.toString());
+  
 
     const digest = shasum.digest("hex");
 
