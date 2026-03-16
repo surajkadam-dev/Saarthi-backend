@@ -1,0 +1,4 @@
+node_modules
+.env
+payment-server/serviceAccountKey.json
+serviceAccountKey.json
