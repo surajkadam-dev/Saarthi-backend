@@ -3,7 +3,7 @@ const razorpay = require("../config/razorpay.js");
 exports.createOrder = async (req, res) => {
   try {
 
-    const { amount } = req.body;
+    const { amount,parcelId } = req.body;
 
     const order = await razorpay.orders.create({
       amount: Math.round(amount * 100), // ✅ fix
@@ -13,7 +13,8 @@ exports.createOrder = async (req, res) => {
 
     res.json({
       orderId: order.id,
-      amount: order.amount
+      amount: order.amount,
+      parcelId
     });
 
   } catch (error) {
