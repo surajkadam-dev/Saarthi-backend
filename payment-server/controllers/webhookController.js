@@ -11,8 +11,7 @@ exports.razorpayWebhook = async (req, res) => {
 
     const shasum = crypto.createHmac("sha256", secret);
 
-    shasum.update(req.body.toString());
-  
+    shasum.update(JSON.stringify(req.body));
 
     const digest = shasum.digest("hex");
 
@@ -20,11 +19,11 @@ exports.razorpayWebhook = async (req, res) => {
       return res.status(400).send("Invalid signature");
     }
 
-    const event = JSON.parse(req.body).event;
+    const event = req.body.event;
 
     if (event === "payment.captured") {
 
-      const payment = JSON.parse(req.body).payload.payment.entity;
+      const payment = req.body.payload.payment.entity;
 
       const parcelId = payment.notes?.parcelId;
 
@@ -40,8 +39,6 @@ exports.razorpayWebhook = async (req, res) => {
 
       }
 
-      console.log("Payment captured:", payment.id);
-
     }
 
     res.status(200).send("Webhook received");
@@ -51,4 +48,5 @@ exports.razorpayWebhook = async (req, res) => {
     res.status(500).json({ error: error.message });
 
   }
+
 };
