@@ -13,15 +13,17 @@ exports.verifyPayment = async (req, res) => {
     } = req.body;
 
     const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", process.env.RAZORPAY_SECRET)
       .update(razorpay_order_id + "|" + razorpay_payment_id)
       .digest("hex");
 
     if (generatedSignature !== razorpay_signature) {
+
       return res.status(400).json({
         success: false,
         message: "Invalid signature"
       });
+
     }
 
     await db.collection("parcels")
@@ -34,8 +36,7 @@ exports.verifyPayment = async (req, res) => {
       });
 
     res.json({
-      success: true,
-      paymentId: razorpay_payment_id
+      success: true
     });
 
   } catch (error) {
@@ -43,4 +44,5 @@ exports.verifyPayment = async (req, res) => {
     res.status(500).json({ error: error.message });
 
   }
+
 };
